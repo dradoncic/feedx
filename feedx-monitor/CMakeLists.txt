@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
-project(feedx LANGUAGES CXX)
+
+project(feedx-monitor LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+cmake_policy(SET CMP0167 NEW)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,6 +31,13 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 
-add_subdirectory(feedx-core)
-add_subdirectory(feedx-aggregator)
-add_subdirectory(feedx-monitor)
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS src/*.cpp)
+
+add_executable(feedx-monitor
+    ${SRC_FILES}
+)
+
+target_include_directories(feedx-monitor PRIVATE
+    include
+    # ${OPENSSL_INCLUDE_DIR}
+)
