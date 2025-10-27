@@ -7,6 +7,7 @@
 
 #include "iauth.h"
 #include "iheartbeat.h"
+#include "imsg.h"
 #include "isub.h"
 
 class IWSConnector
@@ -15,7 +16,9 @@ class IWSConnector
     virtual ~IWSConnector() = default;
 
     virtual void connect(const std::string& url,
-                         const std::string& port = "443") = 0;
+                         const std::string& port = "443",
+                         const std::vector<std::string>& channels,
+                         const std::vector<std::string>& products) = 0;
 
     virtual void close() = 0;
 
@@ -23,7 +26,6 @@ class IWSConnector
 
     std::function<void()> on_connected;
     std::function<void()> on_disconnected;
-    std::function<void(const std::string&)> on_message;
     std::function<void(const std::string&)> on_error;
 
     virtual void subscribe(const std::string& channel,
@@ -64,23 +66,37 @@ class IWSConnector
         subscribe_builder_ = std::move(builder);
     }
 
-    const std::string& host() { return host_; }
-    const std::string& port() { return port_; }
+    void set_message_adapter(std::shared_ptr<IMessageAdapter> adapter)
+    {
+        message_adapter_ = std::move(adapter);
+    }
+
+    const std::string& host()
+    {
+        return host_;
+    }
+    const std::string& port()
+    {
+        return port_;
+    }
 
    protected:
     std::string host_;
     std::string port_;
+    std::vector<std::string> channels_;
+    std::vector<std::string> products_;
 
     std::shared_ptr<IHeartbeatPolicy> heartbeat_policy_;
     std::shared_ptr<IAuthProvider> auth_provider_;
     std::shared_ptr<ISubscribeBuilder> subscribe_builder_;
+    std::shared_ptr<IMessageAdapter> message_adapter_;
 
     void handle_message(const std::string& msg)
     {
         if (heartbeat_policy_)
             heartbeat_policy_->on_message(*this, msg);
-        if (on_message)
-            on_message(msg);
+        if (message_adapter_)
+            message_adapter_->on_message(msg);
     }
 
     void handle_disconnect()

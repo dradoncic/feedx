@@ -12,6 +12,4 @@ class IHeartbeatPolicy
                             const std::string& msg) = 0;
 
     virtual void on_connected(IWSConnector& connector) = 0;
-
-    virtual void tick(IWSConnector& connector) = 0;
 };
