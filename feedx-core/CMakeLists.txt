@@ -30,6 +30,8 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
     endif()
 endif()
 
+find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(OpenSSL REQUIRED)
 
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS src/*.cpp)
 
@@ -39,7 +41,13 @@ add_executable(feedx-core
 
 target_include_directories(feedx-core PRIVATE
     include
-    # ${OPENSSL_INCLUDE_DIR}
+    ${OPENSSL_INCLUDE_DIR}
+)
+
+target_link_libraries(feedx-core PRIVATE
+    Boost::filesystem
+    OpenSSL::SSL
+    OpenSSL::Crypto
 )
 
 
