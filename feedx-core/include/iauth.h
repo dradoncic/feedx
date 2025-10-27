@@ -4,6 +4,9 @@
 
 class IAuthProvider
 {
-public:
-    virtual std::string get_auth_message() const { return ""; }
+   public:
+    virtual std::string get_auth_message() const
+    {
+        return "";
+    }
 };
