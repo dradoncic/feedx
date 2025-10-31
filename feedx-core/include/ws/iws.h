@@ -5,10 +5,10 @@
 #include <map>
 #include <string>
 
-#include "iauth.h"
-#include "iheartbeat.h"
-#include "imsg.h"
-#include "isub.h"
+#include "../auth/iauth.h"
+#include "../heartbeat/iheartbeat.h"
+#include "../msg/imsg.h"
+#include "../msg/isub.h"
 
 class IWSConnector
 {

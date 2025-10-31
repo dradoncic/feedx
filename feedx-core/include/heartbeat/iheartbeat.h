@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include "iws.h"
+#include "../ws/iws.h"
 
 class IHeartbeatPolicy
 {

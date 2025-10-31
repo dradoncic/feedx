@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "iauth.h"
+#include "../auth/iauth.h"
 
 class ISubscribeBuilder
 {
