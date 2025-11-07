@@ -9,7 +9,7 @@ enum Channel
     LEVEL2,
 };
 
-std::unordered_map<std::string_view, Channel> channelMap = {
+inline std::unordered_map<std::string_view, Channel> channelMap = {
     {"ticker", Channel::TICKER},
     {"l2_data", Channel::LEVEL2},
 };

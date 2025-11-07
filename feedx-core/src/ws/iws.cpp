@@ -1,5 +1,7 @@
 #include "ws/iws.h"
 
+#include "heartbeat/iheartbeat.h"
+
 void IWSConnector::subscribe(const std::string& channel,
                              const std::vector<std::string>& products)
 {

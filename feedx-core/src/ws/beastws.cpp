@@ -1,5 +1,5 @@
 #include "ws/beastws.h"
-
+#include "heartbeat/iheartbeat.h"
 #include <iostream>
 
 BeastWSConnector::BeastWSConnector(boost::asio::io_context& ioc,

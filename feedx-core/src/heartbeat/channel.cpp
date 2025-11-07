@@ -1,4 +1,5 @@
 #include "heartbeat/channel.h"
+#include "ws/iws.h"
 
 #include <simdjson.h>
 

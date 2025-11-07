@@ -6,7 +6,6 @@
 #include <string>
 
 #include "../auth/iauth.h"
-#include "../heartbeat/iheartbeat.h"
 #include "../msg/imsg.h"
 #include "../msg/isub.h"
 
@@ -19,8 +18,8 @@ class IWSConnector
 
     virtual void connect(const std::string& url,
                          const std::string& port = "443",
-                         const std::vector<std::string>& channels,
-                         const std::vector<std::string>& products) = 0;
+                         const std::vector<std::string>& channels = {},
+                         const std::vector<std::string>& products = {}) = 0;
 
     virtual void close() = 0;
 
