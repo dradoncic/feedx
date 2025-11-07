@@ -11,6 +11,7 @@
 
 std::string CoinbaseAuth::get_auth_header()
 {
+    return get_jwt();
 }
 
 std::string CoinbaseAuth::get_jwt()

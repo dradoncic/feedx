@@ -39,18 +39,6 @@ class IWSConnector
         send(msg);
     };
 
-    virtual void subscribe(const std::vector<std::string>& channels,
-                           const std::vector<std::string>& products)
-    {
-        if (!subscribe_builder_)
-        {
-            return;
-        }
-        auto msg =
-            subscribe_builder_->build(channels, products, auth_provider_);
-        send(msg);
-    };
-
     void set_heartbeat_policy(std::shared_ptr<IHeartbeatPolicy> policy)
     {
         heartbeat_policy_ = std::move(policy);

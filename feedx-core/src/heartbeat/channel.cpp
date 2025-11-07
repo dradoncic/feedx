@@ -9,7 +9,10 @@ void ChannelHeartbeat::on_connected(IWSConnector& connector)
 {
     if (!heartbeat_channels_.empty())
     {
-        connector.subscribe(heartbeat_channels_, {});
+        for (auto& hb : heartbeat_channels_)
+        {
+            connector.subscribe(hb, {});
+        }
     }
 }
 
