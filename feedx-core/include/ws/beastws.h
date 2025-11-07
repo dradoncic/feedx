@@ -18,7 +18,7 @@ namespace ip = boost::asio::ip;
 class BeastWSConnector : public IWSConnector
 {
    public:
-    BeastWSConnector::BeastWSConnector(boost::asio::io_context& ioc,
+    BeastWSConnector(boost::asio::io_context& ioc,
                                        boost::asio::ssl::context& ssl_ctx);
 
     void connect(const std::string& host, const std::string& port,

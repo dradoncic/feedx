@@ -30,7 +30,7 @@ void ChannelHeartbeat::on_message(IWSConnector& connector,
                       << counter.value() << ". Reconnecting..." << std::endl;
 
             connector.close();
-            connector.connect(connector.host(), connector.port());
+            connector.connect(connector.host(), connector.port(), connector.channels(), connector.products());
             heartbeat_counter_.reset();
             return;
         }

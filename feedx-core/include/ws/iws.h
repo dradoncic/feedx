@@ -10,6 +10,8 @@
 #include "../msg/imsg.h"
 #include "../msg/isub.h"
 
+class IHeartbeatPolicy;
+
 class IWSConnector
 {
    public:
@@ -28,16 +30,8 @@ class IWSConnector
     std::function<void()> on_disconnected;
     std::function<void(const std::string&)> on_error;
 
-    virtual void subscribe(const std::string& channel,
-                           const std::vector<std::string>& products)
-    {
-        if (!subscribe_builder_)
-        {
-            return;
-        }
-        auto msg = subscribe_builder_->build(channel, products, auth_provider_);
-        send(msg);
-    };
+    void subscribe(const std::string& channel,
+                           const std::vector<std::string>& products);
 
     void set_heartbeat_policy(std::shared_ptr<IHeartbeatPolicy> policy)
     {
@@ -67,6 +61,14 @@ class IWSConnector
     {
         return port_;
     }
+    const std::vector<std::string>& channels()
+    {
+        return channels_;
+    }
+    const std::vector<std::string>& products()
+    {
+        return products_;
+    }
 
    protected:
     std::string host_;
@@ -79,17 +81,6 @@ class IWSConnector
     std::shared_ptr<ISubscribeBuilder> subscribe_builder_;
     std::shared_ptr<IMessageAdapter> message_adapter_;
 
-    void handle_message(const std::string& msg)
-    {
-        if (heartbeat_policy_)
-            heartbeat_policy_->on_message(*this, msg);
-        if (message_adapter_)
-            message_adapter_->on_message(msg);
-    }
-
-    void handle_disconnect()
-    {
-        if (on_disconnected)
-            on_disconnected();
-    }
+    void handle_message(const std::string& msg);
+    void handle_disconnect();
 };

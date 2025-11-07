@@ -3,6 +3,7 @@
 
 #include "../ws/iws.h"
 
+class IWSConnector;
 class IHeartbeatPolicy
 {
    public:
