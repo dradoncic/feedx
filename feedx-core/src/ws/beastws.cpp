@@ -109,6 +109,7 @@ void BeastWSConnector::on_handshake(beast::error_code ec)
         return;
     }
 
+    std::cout << "Made it here" << std::endl;
     if (heartbeat_policy_)
     {
         heartbeat_policy_->on_connected(*this);

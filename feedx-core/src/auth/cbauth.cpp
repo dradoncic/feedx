@@ -24,7 +24,7 @@ std::string CoinbaseAuth::get_jwt()
                                      std::chrono::seconds{120})
                      .set_header_claim("kid", jwt::claim(std::string(api_key_)))
                      .set_header_claim("nonce", jwt::claim(get_nonce()))
-                     .sign(jwt::algorithm::es256{"", pem_});
+                     .sign(jwt::algorithm::es256{"", priv_key_});
 
     return token;
 }
@@ -51,25 +51,25 @@ std::string CoinbaseAuth::get_nonce()
 
 void CoinbaseAuth::load_env_variables()
 {
-    const char* pem_c = std::getenv("COINBASE_PEM");
+    const char* priv_key_c = std::getenv("COINBASE_PRIV_KEY");
     const char* api_key_c = std::getenv("COINBASE_API_KEY");
 
-    if (!pem_c || !api_key_c)
+    if (!priv_key_c || !api_key_c)
     {
         std::cerr << "Necessary keys not set in env.\n";
         return;
     }
 
-    std::string pem(pem_c);
+    std::string priv_key(priv_key_c);
     std::string api_key(api_key_c);
 
     size_t pos = 0;
-    while ((pos = pem.find("\\n", pos)) != std::string::npos)
+    while ((pos = priv_key.find("\\n", pos)) != std::string::npos)
     {
-        pem.replace(pos, 2, "\n");
+        priv_key.replace(pos, 2, "\n");
         pos += 1;
     }
 
-    pem_ = pem;
+    priv_key_ = priv_key;
     api_key_ = api_key;
 }

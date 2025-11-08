@@ -18,7 +18,7 @@ void ChannelHeartbeat::on_connected(IWSConnector& connector)
 }
 
 void ChannelHeartbeat::on_message(IWSConnector& connector,
-                                  const std::string& msg)
+                                  const std::string_view& msg)
 {
     auto [is_heartbeat, counter] = is_heartbeat_message(msg);
     if (is_heartbeat)

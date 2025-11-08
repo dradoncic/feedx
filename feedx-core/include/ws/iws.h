@@ -80,6 +80,6 @@ class IWSConnector
     std::shared_ptr<ISubscribeBuilder> subscribe_builder_;
     std::shared_ptr<IMessageAdapter> message_adapter_;
 
-    void handle_message(const std::string& msg);
+    void handle_message(const std::string_view& msg);
     void handle_disconnect();
 };

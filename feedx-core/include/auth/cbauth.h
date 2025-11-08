@@ -14,7 +14,7 @@ class CoinbaseAuth : public IAuthProvider
     std::string get_jwt();
     std::string get_nonce();
 
-    std::string pem_;
+    std::string priv_key_;
     std::string api_key_;
 
 };
