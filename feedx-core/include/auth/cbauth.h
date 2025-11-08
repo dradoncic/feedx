@@ -7,6 +7,10 @@
 class CoinbaseAuth : public IAuthProvider
 {
    public:
+    CoinbaseAuth()
+    {
+        load_env_variables();
+    }
     std::string get_auth_header() override;
 
    private:
@@ -16,5 +20,4 @@ class CoinbaseAuth : public IAuthProvider
 
     std::string priv_key_;
     std::string api_key_;
-
 };

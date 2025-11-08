@@ -1,6 +1,8 @@
 #include "ws/beastws.h"
-#include "heartbeat/iheartbeat.h"
+
 #include <iostream>
+
+#include "heartbeat/iheartbeat.h"
 
 BeastWSConnector::BeastWSConnector(boost::asio::io_context& ioc,
                                    boost::asio::ssl::context& ssl_ctx)
@@ -49,13 +51,12 @@ void BeastWSConnector::on_resolve(beast::error_code ec,
 {
     if (ec)
     {
-        std::cerr << "Resolve: " << ec.message() << '\n';
+        std::cerr << "Resolve: " << ec.message() << "\n";
         return;
     }
-    async_connect(ws_.next_layer().next_layer(), results.begin(),
-                  results.end()),
-        [this](beast::error_code ec, auto) { on_connect(ec); };
-}
+    async_connect(ws_.next_layer().next_layer(), results.begin(), results.end(),
+                  [this](beast::error_code ec, auto) { on_connect(ec); });
+};
 
 void BeastWSConnector::on_connect(beast::error_code ec)
 {
@@ -109,7 +110,6 @@ void BeastWSConnector::on_handshake(beast::error_code ec)
         return;
     }
 
-    std::cout << "Made it here" << std::endl;
     if (heartbeat_policy_)
     {
         heartbeat_policy_->on_connected(*this);
