@@ -7,10 +7,13 @@
 #include <thread>
 #include <vector>
 
-#include "auth/cbauth.h"
-#include "heartbeat/channel.h"
-#include "msg/cbmsg.h"
-#include "msg/cbsub.h"
+// #include "auth/cbauth.h"
+// #include "heartbeat/channel.h"
+// #include "msg/cbmsg.h"
+// #include "msg/cbsub.h"
+#include "heartbeat/ping.h"
+#include "msg/pmmsg.h"
+#include "msg/pmsub.h"
 #include "ws/beastws.h"
 
 static std::atomic<bool> g_running{true};
@@ -40,40 +43,70 @@ int main(int argc, char** argv)
 
     auto ws = std::make_shared<BeastWSConnector>(ioc, ssl_ctx);
 
-    auto auth_provider = std::make_shared<CoinbaseAuth>();
-    ws->set_auth_policy(auth_provider);
-
-    auto subscribe_builder = std::make_shared<CoinbaseSubscriber>();
+    auto subscribe_builder = std::make_shared<PolymarketSubscriber>();
     ws->set_subscribe_builder(subscribe_builder);
 
-    auto message_adapter = std::make_shared<CoinbaseAdapter>();
+    auto message_adapter = std::make_shared<PolymarketAdapter>();
     ws->set_message_adapter(message_adapter);
 
-    auto heartbeat_policy = std::make_shared<ChannelHeartbeat>();
-    std::string heartbeat_channel = "heartbeats";
-    heartbeat_policy->add_heartbeat_channel(heartbeat_channel);
+    auto heartbeat_policy = std::make_shared<PingHeartbeat>(std::chrono::seconds(5));
     ws->set_heartbeat_policy(heartbeat_policy);
 
     ws->on_connected = []()
-    { std::cout << "Connected to Coinbase Websocket" << std::endl; };
+    { std::cout << "Connected to Polymarket Websocket" << std::endl; };
 
     ws->on_disconnected = []()
-    { std::cout << "Disconnected from Coinbase Websocket" << std::endl; };
+    { std::cout << "Disconnected from Polymarket Websocket" << std::endl; };
 
     ws->on_error = [](const std::string& err)
     { std::cout << "Error: " << err << std::endl; };
 
-    std::vector<std::string> products = {"BTC-USD", "ETH-USD"};
-    std::vector<std::string> channels = {"level2"};
+    std::vector<std::string> products = {"71321045679252212594626385532706912750332728571942532289631379312455583992563"};
+    std::vector<std::string> channels = {"agg_orderbook"};
 
-    std::string host = "advanced-trade-ws.coinbase.com";
+    std::string host = "wss://ws-live-data.polymarket.com/ws";
     std::string port = "443";
 
     ws->connect(host, port, channels, products);
 
     std::cout << "Connecting to " << host << ":" << port << std::endl;
-    std::cout << "Subscribing to channels: level2" << std::endl;
-    std::cout << "Products: BTC-USD, ETH-USD" << std::endl;
+    std::cout << "Subscribing to channels: markets" << std::endl;
+    std::cout << "Products: Government shutdown." << std::endl;
+
+    // auto auth_provider = std::make_shared<CoinbaseAuth>();
+    // ws->set_auth_policy(auth_provider);
+
+    // auto subscribe_builder = std::make_shared<CoinbaseSubscriber>();
+    // ws->set_subscribe_builder(subscribe_builder);
+
+    // auto message_adapter = std::make_shared<CoinbaseAdapter>();
+    // ws->set_message_adapter(message_adapter);
+
+    // auto heartbeat_policy = std::make_shared<ChannelHeartbeat>();
+    // std::string heartbeat_channel = "heartbeats";
+    // heartbeat_policy->add_heartbeat_channel(heartbeat_channel);
+    // ws->set_heartbeat_policy(heartbeat_policy);
+
+    // ws->on_connected = []()
+    // { std::cout << "Connected to Coinbase Websocket" << std::endl; };
+
+    // ws->on_disconnected = []()
+    // { std::cout << "Disconnected from Coinbase Websocket" << std::endl; };
+
+    // ws->on_error = [](const std::string& err)
+    // { std::cout << "Error: " << err << std::endl; };
+
+    // std::vector<std::string> products = {"BTC-USD", "ETH-USD"};
+    // std::vector<std::string> channels = {"level2"};
+
+    // std::string host = "advanced-trade-ws.coinbase.com";
+    // std::string port = "443";
+
+    // ws->connect(host, port, channels, products);
+
+    // std::cout << "Connecting to " << host << ":" << port << std::endl;
+    // std::cout << "Subscribing to channels: level2" << std::endl;
+    // std::cout << "Products: BTC-USD, ETH-USD" << std::endl;
     
     std::thread io_thread(
         [&ioc]()

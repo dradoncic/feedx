@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <optional>
 
 #include "../auth/iauth.h"
 
@@ -11,5 +12,5 @@ class ISubscribeBuilder
 
     virtual std::string build(
         const std::string& channel, const std::vector<std::string>& products,
-        std::shared_ptr<IAuthProvider>& auth_provider) = 0;
+        std::optional<std::shared_ptr<IAuthProvider>> auth_provider) = 0;
 };

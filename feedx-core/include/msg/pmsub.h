@@ -1,7 +1,7 @@
 #pragma once
 #include "isub.h"
 
-class CoinbaseSubscriber : public ISubscribeBuilder
+class PolymarketSubscriber : public ISubscribeBuilder
 {
    public:
     std::string build(const std::string& channel,

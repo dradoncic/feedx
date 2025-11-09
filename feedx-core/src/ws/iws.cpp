@@ -9,7 +9,11 @@ void IWSConnector::subscribe(const std::string& channel,
     {
         return;
     }
-    auto msg = subscribe_builder_->build(channel, products, auth_provider_);
+
+    auto msg =
+        auth_provider_
+            ? subscribe_builder_->build(channel, products, auth_provider_)
+            : subscribe_builder_->build(channel, products, std::nullopt);
     send(msg);
 }
 
