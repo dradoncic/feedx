@@ -11,7 +11,7 @@
 class ChannelHeartbeat : public IHeartbeatPolicy
 {
    public:
-    void on_message(IWSConnector& connector, const std::string_view& msg) override;
+    void on_message(IWSConnector& connector, const std::string_view msg) override;
     void on_connected(IWSConnector& connector) override;
 
     std::pair<bool, std::optional<uint64_t>> is_heartbeat_message(

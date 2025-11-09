@@ -7,6 +7,6 @@ class IMessageAdapter
    public:
     virtual void on_message(const std::string_view msg) = 0;
 
-   private:
+   protected:
     simdjson::ondemand::parser parser_;
 };

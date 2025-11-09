@@ -13,7 +13,7 @@ void IWSConnector::subscribe(const std::string& channel,
     send(msg);
 }
 
-void IWSConnector::handle_message(const std::string_view& msg)
+void IWSConnector::handle_message(const std::string_view msg)
 {
     if (heartbeat_policy_)
         heartbeat_policy_->on_message(*this, msg);

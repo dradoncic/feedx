@@ -26,7 +26,6 @@ std::string CoinbaseAuth::get_jwt()
                      .set_header_claim("nonce", jwt::claim(get_nonce()))
                      .sign(jwt::algorithm::es256{"", priv_key_});
 
-    std::cout << token << std::endl;
     return token;
 }
 

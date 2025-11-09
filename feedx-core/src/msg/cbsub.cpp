@@ -2,6 +2,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include  <iostream>
+
 std::string CoinbaseSubscriber::build(
     const std::string& channel, const std::vector<std::string>& products,
     std::shared_ptr<IAuthProvider>& auth_provider)

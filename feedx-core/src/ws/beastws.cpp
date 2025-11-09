@@ -124,8 +124,8 @@ void BeastWSConnector::on_handshake(beast::error_code ec)
     }
 
     ws_.async_read(read_buffer_,
-                   [this](beast::error_code ec, std::size_t bytes_transferred)
-                   { on_read(ec, bytes_transferred); });
+        [this](beast::error_code ec, std::size_t bytes_transferred)
+        { on_read(ec, bytes_transferred); });
 }
 
 void BeastWSConnector::on_read(beast::error_code ec,
@@ -140,6 +140,7 @@ void BeastWSConnector::on_read(beast::error_code ec,
     auto message = beast::buffers_to_string(read_buffer_.data());
     read_buffer_.consume(bytes_transferred);
 
+    std::cout << "Recieved message: " << message << std::endl;
     handle_message(message);
 
     ws_.async_read(read_buffer_,

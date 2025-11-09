@@ -8,7 +8,7 @@ class IHeartbeatPolicy
     virtual ~IHeartbeatPolicy() = default;
 
     virtual void on_message(IWSConnector& connector,
-                            const std::string_view& msg) = 0;
+                            const std::string_view msg) = 0;
 
     virtual void on_connected(IWSConnector& connector) = 0;
 };

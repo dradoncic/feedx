@@ -74,7 +74,7 @@ int main(int argc, char** argv)
     std::cout << "Connecting to " << host << ":" << port << std::endl;
     std::cout << "Subscribing to channels: level2" << std::endl;
     std::cout << "Products: BTC-USD, ETH-USD" << std::endl;
-
+    
     std::thread io_thread(
         [&ioc]()
         {

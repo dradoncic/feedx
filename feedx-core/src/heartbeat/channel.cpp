@@ -18,7 +18,7 @@ void ChannelHeartbeat::on_connected(IWSConnector& connector)
 }
 
 void ChannelHeartbeat::on_message(IWSConnector& connector,
-                                  const std::string_view& msg)
+                                  const std::string_view msg)
 {
     auto [is_heartbeat, counter] = is_heartbeat_message(msg);
     if (is_heartbeat)
@@ -47,13 +47,13 @@ std::pair<bool, std::optional<uint64_t>> ChannelHeartbeat::is_heartbeat_message(
     simdjson::ondemand::document doc = parser_.iterate(json);
 
     std::string_view channel = doc["channel"];
-    if (!(channel == "subscriptions"))
+    if (channel == "subscriptions")
         return {false, std::nullopt};
 
     simdjson::ondemand::array events = doc["events"];
     simdjson::ondemand::object event = events.at(0).get_object();
 
-    uint64_t counter = event["heartbeat_counter"].get_uint64_in_string();
+    uint64_t counter = event["heartbeat_counter"].get_uint64();
     return {true, counter};
 }
 
