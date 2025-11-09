@@ -5,6 +5,7 @@
 #include <boost/beast.hpp>
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/websocket.hpp>
+#include <deque>
 #include <nlohmann/json.hpp>
 
 #include "iws.h"
@@ -19,7 +20,7 @@ class BeastWSConnector : public IWSConnector
 {
    public:
     BeastWSConnector(boost::asio::io_context& ioc,
-                                       boost::asio::ssl::context& ssl_ctx);
+                     boost::asio::ssl::context& ssl_ctx);
 
     void connect(const std::string& host, const std::string& port,
                  const std::vector<std::string>& channels,
@@ -34,6 +35,7 @@ class BeastWSConnector : public IWSConnector
     void on_ssl_handshake(beast::error_code ec);
     void on_handshake(beast::error_code ec);
     void on_read(beast::error_code ec, size_t bytes_transferred);
+    void do_write();
 
     net::io_context& ioc_;  // event loop, i.e. schedules and executes all of
                             // the asynchronous network operations
@@ -44,6 +46,8 @@ class BeastWSConnector : public IWSConnector
 
     beast::flat_buffer read_buffer_;  // internally managed buffer
     std::string write_buffer_;        // temporary write buffer
+    std::deque<std::string> write_queue_;
+    bool writing_ = false;
 
     std::string host_;
     std::string port_;

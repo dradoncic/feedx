@@ -25,24 +25,54 @@ void BeastWSConnector::connect(const std::string& host, const std::string& port,
 
 void BeastWSConnector::close()
 {
-    ws_.async_close(websocket::close_code::normal,
-                    [this](beast::error_code ec)
-                    {
-                        if (ec)
-                            std::cerr << "Close: " << ec.message() << "\n";
-                    });
+    net::post(ioc_,
+              [this]()
+              {
+                  write_queue_.clear();
+                  ws_.async_close(websocket::close_code::normal,
+                                  [this](beast::error_code ec)
+                                  {
+                                      if (ec)
+                                          std::cerr << "Close: " << ec.message()
+                                                    << "\n";
+                                  });
+              });
 }
 
 void BeastWSConnector::send(const std::string& msg)
 {
-    ws_.async_write(net::buffer(msg),
+    net::post(ioc_,
+              [this, msg]
+              {
+                  bool write_idle = write_queue_.empty();
+                  write_queue_.push_back(msg);
+
+                  if (write_idle)
+                      do_write();
+              });
+}
+
+void BeastWSConnector::do_write()
+{
+    if (write_queue_.empty())
+    {
+        return;
+    }
+
+    ws_.async_write(net::buffer(write_queue_.front()),
                     [this](beast::error_code ec, size_t bytes_transferred)
                     {
                         if (ec)
                         {
                             if (on_error)
-                                on_error("Send error: " + ec.message());
+                                on_error("Write error: " + ec.message());
+                            return;
                         }
+
+                        write_queue_.pop_front();
+
+                        if (!write_queue_.empty())
+                            do_write();
                     });
 }
 
@@ -124,8 +154,8 @@ void BeastWSConnector::on_handshake(beast::error_code ec)
     }
 
     ws_.async_read(read_buffer_,
-        [this](beast::error_code ec, std::size_t bytes_transferred)
-        { on_read(ec, bytes_transferred); });
+                   [this](beast::error_code ec, std::size_t bytes_transferred)
+                   { on_read(ec, bytes_transferred); });
 }
 
 void BeastWSConnector::on_read(beast::error_code ec,
@@ -140,7 +170,6 @@ void BeastWSConnector::on_read(beast::error_code ec,
     auto message = beast::buffers_to_string(read_buffer_.data());
     read_buffer_.consume(bytes_transferred);
 
-    std::cout << "Recieved message: " << message << std::endl;
     handle_message(message);
 
     ws_.async_read(read_buffer_,

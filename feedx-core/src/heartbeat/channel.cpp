@@ -47,7 +47,7 @@ std::pair<bool, std::optional<uint64_t>> ChannelHeartbeat::is_heartbeat_message(
     simdjson::ondemand::document doc = parser_.iterate(json);
 
     std::string_view channel = doc["channel"];
-    if (channel == "subscriptions")
+    if (channel != "heartbeats")
         return {false, std::nullopt};
 
     simdjson::ondemand::array events = doc["events"];
